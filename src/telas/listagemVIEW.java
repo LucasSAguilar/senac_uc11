@@ -1,4 +1,8 @@
+package telas;
 
+
+import codigos.ProdutosDAO;
+import codigos.ProdutosDTO;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 
