@@ -34,14 +34,40 @@ public class ProdutosDAO {
             JOptionPane.showMessageDialog(null, "Dado salvo com sucesso!");
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-             JOptionPane.showMessageDialog(null, "Erro ao inserir dados: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Erro ao inserir dados: " + e.getMessage());
         }
 
     }
 
     public ArrayList<ProdutosDTO> listarProdutos() {
+    try {
+        String sql = "SELECT * FROM produtos";
 
-        return listagem;
+        conn = new conectaDAO().connectDB();
+
+        PreparedStatement preparedStatement = conn.prepareStatement(sql);
+
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        listagem.clear();
+
+        while (resultSet.next()) {
+            ProdutosDTO produto = new ProdutosDTO();
+            produto.setId(resultSet.getInt("id"));
+            produto.setNome(resultSet.getString("nome"));
+            produto.setValor(resultSet.getInt("valor"));
+            produto.setStatus(resultSet.getString("status"));
+            listagem.add(produto);
+        }
+        
+        preparedStatement.close();
+        resultSet.close();
+
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(null, "Erro ao buscar dados: " + e.getMessage());
     }
+    return listagem;
+}
 
 }
