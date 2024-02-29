@@ -39,35 +39,54 @@ public class ProdutosDAO {
 
     }
 
-    public ArrayList<ProdutosDTO> listarProdutos() {
-    try {
-        String sql = "SELECT * FROM produtos";
+    public void venderProduto(int id) {
+        try {
+            String sql = "UPDATE produtos SET status = 'Vendido' WHERE id = ?";
 
-        conn = new conectaDAO().connectDB();
+            conn = new conectaDAO().connectDB();
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
 
-        PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            int rowsAffected = preparedStatement.executeUpdate();
 
-
-        ResultSet resultSet = preparedStatement.executeQuery();
-
-        listagem.clear();
-
-        while (resultSet.next()) {
-            ProdutosDTO produto = new ProdutosDTO();
-            produto.setId(resultSet.getInt("id"));
-            produto.setNome(resultSet.getString("nome"));
-            produto.setValor(resultSet.getInt("valor"));
-            produto.setStatus(resultSet.getString("status"));
-            listagem.add(produto);
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(null, "Produto vendido com sucesso!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Produto não encontrado ou não pôde ser vendido.");
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar dados: " + e.getMessage());
         }
-        
-        preparedStatement.close();
-        resultSet.close();
-
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(null, "Erro ao buscar dados: " + e.getMessage());
     }
-    return listagem;
-}
+
+    public ArrayList<ProdutosDTO> listarProdutos() {
+        try {
+            String sql = "SELECT * FROM produtos";
+
+            conn = new conectaDAO().connectDB();
+
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            listagem.clear();
+
+            while (resultSet.next()) {
+                ProdutosDTO produto = new ProdutosDTO();
+                produto.setId(resultSet.getInt("id"));
+                produto.setNome(resultSet.getString("nome"));
+                produto.setValor(resultSet.getInt("valor"));
+                produto.setStatus(resultSet.getString("status"));
+                listagem.add(produto);
+            }
+
+            preparedStatement.close();
+            resultSet.close();
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao buscar dados: " + e.getMessage());
+        }
+        return listagem;
+    }
 
 }
